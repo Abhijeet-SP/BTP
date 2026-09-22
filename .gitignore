@@ -1,0 +1,9 @@
+data/
+data5/
+data5_*/
+models/
+outputs/
+.venv/
+__pycache__/
+*.zip
+.DS_Store

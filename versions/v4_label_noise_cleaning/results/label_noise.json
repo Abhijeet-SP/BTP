@@ -1,0 +1,21 @@
+{
+  "train_rows": 160000,
+  "removed": 145,
+  "removed_pct": 0.09,
+  "threshold": 0.9,
+  "min_distance": 2,
+  "removed_by_star": {
+    "1": 22,
+    "2": 21,
+    "3": 73,
+    "4": 17,
+    "5": 12
+  },
+  "removed_by_class": {
+    "neutral": 73,
+    "strongly_negative": 22,
+    "negative": 21,
+    "positive": 17,
+    "strongly_positive": 12
+  }
+}

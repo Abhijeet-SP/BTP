@@ -1,0 +1,127 @@
+{
+  "roberta_large_3class": {
+    "accuracy": 0.8333,
+    "macro_f1": 0.8334,
+    "report": {
+      "negative": {
+        "precision": 0.8125621148876963,
+        "recall": 0.8176,
+        "f1-score": 0.8150732728541521,
+        "support": 5000.0
+      },
+      "neutral": {
+        "precision": 0.7552041633306645,
+        "recall": 0.7546,
+        "f1-score": 0.7549019607843137,
+        "support": 5000.0
+      },
+      "positive": {
+        "precision": 0.932837321536296,
+        "recall": 0.9278,
+        "f1-score": 0.930311841973328,
+        "support": 5000.0
+      },
+      "accuracy": 0.8333333333333334,
+      "macro avg": {
+        "precision": 0.8335345332515521,
+        "recall": 0.8333333333333334,
+        "f1-score": 0.8334290252039313,
+        "support": 15000.0
+      },
+      "weighted avg": {
+        "precision": 0.8335345332515522,
+        "recall": 0.8333333333333334,
+        "f1-score": 0.8334290252039314,
+        "support": 15000.0
+      }
+    },
+    "train_seconds": 77.6,
+    "resumed": true,
+    "device": "cuda",
+    "train_size": 120000,
+    "hyperparameters": {
+      "model": "roberta-large",
+      "name": "roberta_large",
+      "epochs": 2,
+      "lr": 1e-05,
+      "batch_size": 8,
+      "grad_accum": 4,
+      "max_length": 256,
+      "eval_steps": 1875
+    }
+  },
+  "roberta_large_3class_natural": {
+    "accuracy": 0.8935,
+    "macro_f1": 0.7682,
+    "report": {
+      "negative": {
+        "precision": 0.8951456310679612,
+        "recall": 0.8207715133531157,
+        "f1-score": 0.8563467492260062,
+        "support": 3370.0
+      },
+      "neutral": {
+        "precision": 0.3636701337295691,
+        "recall": 0.7636505460218409,
+        "f1-score": 0.49270256668344237,
+        "support": 1282.0
+      },
+      "positive": {
+        "precision": 0.9934589956393304,
+        "recall": 0.9203153505342716,
+        "f1-score": 0.9554894135155246,
+        "support": 15348.0
+      },
+      "accuracy": 0.8935,
+      "macro avg": {
+        "precision": 0.7507582534789535,
+        "recall": 0.8349124699697427,
+        "f1-score": 0.7681795764749911,
+        "support": 20000.0
+      },
+      "weighted avg": {
+        "precision": 0.936523727660639,
+        "recall": 0.8935,
+        "f1-score": 0.9091192377008043,
+        "support": 20000.0
+      }
+    }
+  },
+  "roberta_large_3class_natural_prior": {
+    "accuracy": 0.9272,
+    "macro_f1": 0.7889,
+    "report": {
+      "negative": {
+        "precision": 0.8506258692628651,
+        "recall": 0.9074183976261128,
+        "f1-score": 0.8781048097631012,
+        "support": 3370.0
+      },
+      "neutral": {
+        "precision": 0.5119322555812164,
+        "recall": 0.5187207488299532,
+        "f1-score": 0.515304145679969,
+        "support": 1282.0
+      },
+      "positive": {
+        "precision": 0.9810671256454389,
+        "recall": 0.965598123534011,
+        "f1-score": 0.9732711630656071,
+        "support": 15348.0
+      },
+      "accuracy": 0.92715,
+      "macro avg": {
+        "precision": 0.78120841682984,
+        "recall": 0.797245756663359,
+        "f1-score": 0.7888933728362257,
+        "support": 20000.0
+      },
+      "weighted avg": {
+        "precision": 0.9290162287738585,
+        "recall": 0.92715,
+        "f1-score": 0.9278799467197155,
+        "support": 20000.0
+      }
+    }
+  }
+}

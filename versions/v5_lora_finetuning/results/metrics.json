@@ -1,0 +1,22 @@
+{
+  "roberta_base_5class_int8": {
+    "fp32_cpu": {
+      "accuracy": 0.651,
+      "macro_f1": 0.6473,
+      "qwk": 0.8827,
+      "mae_classes": 0.3912,
+      "reviews_per_second": 19.2
+    },
+    "fp32_size_mb": 249,
+    "int8_cpu": {
+      "accuracy": 0.6452,
+      "macro_f1": 0.6418,
+      "qwk": 0.8812,
+      "mae_classes": 0.3967,
+      "reviews_per_second": 5.6
+    },
+    "int8_size_mb": 126,
+    "model": "models/roberta5",
+    "test_rows": 4000
+  }
+}
