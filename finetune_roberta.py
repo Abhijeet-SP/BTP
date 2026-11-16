@@ -4,9 +4,9 @@ Usage:
   python finetune_roberta.py                                    # v1: roberta-base -> models/roberta_base_3class
   python finetune_roberta.py --model roberta-large --name roberta_large_3class --lr 1e-5 --batch-size 8 --grad-accum 4 \
       --eval-steps 1875 --ckpt-dir /content/drive/MyDrive/btp_ckpt/roberta_large_3class   # v2 -> models/roberta_large_3class
-  python finetune_roberta.py --name roberta_base_5class --data-dir data5     # v3: 5 classes, one per star
-  python finetune_roberta.py --name roberta_base_5class_lora --data-dir data5 --lora    # v5: LoRA
-  python finetune_roberta.py --name roberta_base_5class_qlora --data-dir data5 --qlora  # v6: QLoRA (4-bit base, CUDA only)
+  python finetune_roberta.py --name roberta_base_5class --data-dir datasets/sentiment_5class     # v3: 5 classes, one per star
+  python finetune_roberta.py --name roberta_base_5class_lora --data-dir datasets/sentiment_5class --lora    # v5: LoRA
+  python finetune_roberta.py --name roberta_base_5class_qlora --data-dir datasets/sentiment_5class --qlora  # v6: QLoRA (4-bit base, CUDA only)
   python finetune_roberta.py --name smoke --limit 200 --epochs 1  # smoke test (keep --name smoke: never overwrite real results)
 
 Re-running the same command resumes from the latest checkpoint in --ckpt-dir (survives Colab disconnects).
@@ -35,18 +35,19 @@ ap.add_argument("--eval-steps", type=int, default=0, help="0 = evaluate/save onc
 ap.add_argument("--limit", type=int, default=0, help="cap rows per split (smoke tests)")
 ap.add_argument("--out", help="default: models/<name>")
 ap.add_argument("--ckpt-dir", help="default: models/<name>_checkpoints (point at Google Drive on Colab)")
-ap.add_argument("--data-dir", default="data", help="data/ = 3 classes, data5/ = 5 classes")
+ap.add_argument("--data-dir", default="datasets/sentiment_3class", help="datasets/sentiment_3class/ = 3 classes, datasets/sentiment_5class/ = 5 classes")
 ap.add_argument("--lora", action="store_true", help="LoRA instead of full fine-tuning (needs `pip install peft`)")
 ap.add_argument("--qlora", action="store_true", help="LoRA on a 4-bit frozen base (needs bitsandbytes, CUDA only)")
 ap.add_argument("--lora-r", type=int, default=8)
-ap.add_argument("--results-dir", default="results", help="where metrics/figures/logs go (per version)")
-ap.add_argument("--dump-test-probs", help="save softmax probabilities for <data-dir>/test.csv to this .npy (used by detect_label_noise.py)")
+ap.add_argument("--results-dir", default="before_mid_evaluation/local_results", help="where metrics/figures/logs go (per version)")
+ap.add_argument("--dump-test-probs", help="save softmax probabilities for <data-dir>/test_balanced.csv to this .npy (used by detect_label_noise.py)")
 args = ap.parse_args()
 args.out = args.out or f"models/{args.name}"
 args.ckpt_dir = args.ckpt_dir or f"models/{args.name}_checkpoints"
 set_seed(42)
 
-ds = load_dataset("csv", data_files={s: f"{args.data_dir}/{s}.csv" for s in ("train", "val")})
+ds = load_dataset("csv", data_files={s: f"{args.data_dir}/{filename}"
+                                      for s, filename in (("train", "train.csv"), ("val", "validation.csv"))})
 n_classes = max(ds["train"]["label"]) + 1
 LABELS = label_names(n_classes)
 print(f"{n_classes}-class task: {LABELS}")
@@ -130,7 +131,7 @@ device = "cuda" if cuda else "mps" if torch.backends.mps.is_available() else "cp
 if args.dump_test_probs:
     import pandas as pd
     from scipy.special import softmax
-    texts = pd.read_csv(f"{args.data_dir}/test.csv").text.tolist()
+    texts = pd.read_csv(f"{args.data_dir}/test_balanced.csv").text.tolist()
     np.save(args.dump_test_probs, softmax(predict_logits(texts), axis=-1))
     print(f"Saved probabilities for {len(texts)} rows to {args.dump_test_probs}")
 

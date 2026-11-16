@@ -1,7 +1,7 @@
 """Score a trained model locally (inference only, light on a laptop).
 
-  python evaluate_model.py --model models/roberta_base_5class --data-dir data5 --results-dir versions/v3_star_level_5class/results
-  python evaluate_model.py --model models/roberta_base_5class --quantize     # int8 size/speed/accuracy trade-off (CPU)
+  python evaluate_model.py --model models/roberta_base_5class --data-dir datasets/sentiment_5class --results-dir before_mid_evaluation/experiments/v3_star_level_5class/results
+  python evaluate_model.py --model models/roberta_base_5class --data-dir datasets/sentiment_5class --quantize     # int8 size/speed/accuracy trade-off (CPU)
 
 Writes metrics under "<model>_local*", the most confident mistakes to errors/, and with --quantize
 a "<model>_quantized" entry comparing fp32 against int8.
@@ -19,8 +19,8 @@ from prepare_data import evaluate_all, label_names
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--model", default="models/roberta_base_3class")
-ap.add_argument("--data-dir", default="data", help="data/ = 3 classes, data5/ = 5 classes")
-ap.add_argument("--results-dir", default="results")
+ap.add_argument("--data-dir", default="datasets/sentiment_3class", help="datasets/sentiment_3class/ = 3 classes, datasets/sentiment_5class/ = 5 classes")
+ap.add_argument("--results-dir", default="before_mid_evaluation/local_results")
 ap.add_argument("--limit", type=int, default=0)
 ap.add_argument("--batch-size", type=int, default=64)
 ap.add_argument("--quantize", action="store_true", help="also measure int8 dynamic quantization (CPU only)")
@@ -45,7 +45,7 @@ if args.quantize:
     from torch.ao.quantization import default_dynamic_qconfig, float_qparams_weight_only_qconfig
     torch.backends.quantized.engine = "qnnpack" if "qnnpack" in torch.backends.quantized.supported_engines \
         else torch.backends.quantized.supported_engines[0]
-    test = pd.read_csv(f"{args.data_dir}/test.csv", nrows=args.limit or 4000)
+    test = pd.read_csv(f"{args.data_dir}/test_balanced.csv", nrows=args.limit or 4000)
     texts, labels = test.text.tolist(), test.label.to_numpy()
 
     def score(model):

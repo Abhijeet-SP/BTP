@@ -25,7 +25,7 @@ so this version fixes the data instead.
 raise the score for a meaningless reason.
 
 ## Results
-_Pending the Colab run. Fill in from `results/metrics.json` (keys `roberta_base_5class_cleaned*`)._
+Cleaning evidence, training logs and figures exist. Final model test scores remain unreconciled because `results/metrics.json` is empty; do not infer that no training occurred or fill scores from memory.
 
 | Balanced test (20k) | Accuracy | Macro-F1 | Off-by-one | MAE | QWK |
 |---|---|---|---|---|---|
@@ -37,5 +37,7 @@ Also produced: `results/label_noise.json` (how many reviews were removed, by sta
 measured, not just consumed.
 
 ## Files
-`notebook.ipynb` · `results/` · put the downloaded zip in the root `outputs/`.
-Reproduce: `python detect_label_noise.py --data-dir data5`, then `python finetune_roberta.py --name roberta_base_5class_cleaned --data-dir data5_clean --results-dir versions/v4_label_noise_cleaning/results`.
+`notebook.ipynb` · `results/` · put the downloaded zip in the root `downloads/colab_archives/`.
+Reproduce: `python detect_label_noise.py --data-dir datasets/sentiment_5class --results-dir before_mid_evaluation/experiments/v4_label_noise_cleaning/results`, then `python finetune_roberta.py --name roberta_base_5class_cleaned --data-dir datasets/sentiment_5class_cleaned --results-dir before_mid_evaluation/experiments/v4_label_noise_cleaning/results`.
+
+Run the commands above from the repository root (`main_btp/` locally, `/content/BTP` on Colab). This experiment is archived under `before_mid_evaluation/experiments/`; restructuring did not rerun it or change its saved results.

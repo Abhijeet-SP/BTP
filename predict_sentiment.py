@@ -4,7 +4,8 @@
   python predict_sentiment.py < reviews.txt                      # one review per line
   python predict_sentiment.py --web                              # Gradio page at http://127.0.0.1:7860
 
-Uses models/roberta_base_5class if present, else models/roberta_base_3class. Override with MODEL=models/roberta_large_3class.
+Uses prepare_data.default_model() to select an available model. Set MODEL=models/roberta_base_5class
+to select the original five-class model explicitly.
 """
 import os, sys
 

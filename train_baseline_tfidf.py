@@ -1,6 +1,6 @@
 """TF-IDF + Logistic Regression baseline on the same splits as RoBERTa.
 
-Usage: python train_baseline_tfidf.py [--data-dir data5]
+Usage: python train_baseline_tfidf.py [--data-dir datasets/sentiment_5class]
 """
 import argparse, time
 
@@ -11,13 +11,12 @@ from sklearn.linear_model import LogisticRegression
 from prepare_data import evaluate_all
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--data-dir", default="data", help="data/ = 3 classes, data5/ = 5 classes")
+ap.add_argument("--data-dir", default="datasets/sentiment_3class", help="datasets/sentiment_3class/ = 3 classes, datasets/sentiment_5class/ = 5 classes")
 ap.add_argument("--name", default=None, help="metrics key; default tfidf_3class / tfidf_5class")
-ap.add_argument("--results-dir", default="results")
+ap.add_argument("--results-dir", default="before_mid_evaluation/local_results")
 args = ap.parse_args()
-name = args.name or ("tfidf_3class" if args.data_dir == "data" else "tfidf_5class")
-
 train = pd.read_csv(f"{args.data_dir}/train.csv")
+name = args.name or f"tfidf_{int(train.label.max()) + 1}class"
 
 t0 = time.time()
 vec = TfidfVectorizer(ngram_range=(1, 2), min_df=2, max_features=200_000, sublinear_tf=True)

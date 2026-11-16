@@ -1,6 +1,6 @@
 # v3 — 5 classes, one per star
 
-**Previous version:** [v2](../v2_roberta_large) — a 3x bigger model gained only +0.6 points, so size is not the limit.
+**Previous version:** [v2](../v2_roberta_large_3class) — a 3x bigger model gained only +0.6 points, so size is not the limit.
 
 ## What changed
 The task itself. Instead of 3 buckets, the model predicts the **star rating**:
@@ -15,7 +15,7 @@ The task itself. Instead of 3 buckets, the model predicts the **star rating**:
 
 This predicts **intensity**, not just direction, which is what separates this project from standard
 positive/negative sentiment work. Model and settings are identical to v1 (roberta-base, lr 2e-5, batch 32,
-2 epochs); only the labels and the data folder (`data5/`) differ: 40,000 reviews per star → 160k train / 20k val / 20k test.
+2 epochs); only the labels and the data folder (`datasets/sentiment_5class/`) differ: 40,000 reviews per star → 160k train / 20k val / 20k test.
 
 **New metrics.** With ordered labels, predicting 4★ for a 5★ review is a small error while predicting 1★ is a large one,
 so accuracy alone is misleading. Every model now also reports:
@@ -47,3 +47,5 @@ Per class: 1★ 0.711 · 2★ 0.529 · 3★ 0.550 · 4★ 0.623 · 5★ 0.802.
 ## Files
 `notebook.ipynb` · `results/`.
 Reproduce: `python prepare_data.py --classes 5 --per-class 40000`, then the notebook.
+
+Run the commands above from the repository root (`main_btp/` locally, `/content/BTP` on Colab). This experiment is archived under `before_mid_evaluation/experiments/`; restructuring did not rerun it or change its saved results.

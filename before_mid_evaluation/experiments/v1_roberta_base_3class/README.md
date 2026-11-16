@@ -20,14 +20,16 @@ negative / neutral / positive, and compares it against a classical TF-IDF + Logi
 Fine-tuning gains **+4.7 points of macro-F1** over the baseline, most of it on the hard neutral class.
 
 ## What we learned
-- Validation plateaued after epoch 1 (0.8286 → 0.8300), so more epochs would not help.
+- Validation changed only slightly from epoch 1 to 2 (0.8286 → 0.8300); more epochs were not tested.
 - 99% of errors are between adjacent classes; negative vs positive is confused only ~1% of the time.
 - Error rate by star rating: 1★ 11%, 2★ 39%, 3★ 25%, 4★ 35%, 5★ 3.7% — errors cluster where the star rating and the
-  review text disagree. The most confident mistakes are mislabelled reviews (see `results/errors/errors_roberta.csv`).
-- Deployment: fp16 weights, 249 MB, ~27 reviews/s on an Apple M2 GPU. fp16 conversion cost zero accuracy.
+  review text disagree. Some confident mistakes suggest star/text disagreement (see `results/errors/errors_roberta_base_3class.csv`).
+- Deployment uses fp16 model weights. Earlier local speed/conversion claims need their benchmark artifacts before being treated as reconciled evidence.
 
 **This motivated v2:** if the model is at 0.827, is the limit the model's size or the data?
 
 ## Files
 `notebook.ipynb` the Colab run · `results/` this version's metrics, figures and logs.
-Reproduce: `python prepare_data.py && python train_baseline_tfidf.py`, then the notebook on a Colab T4.
+Reproduce on Colab with `notebook.ipynb`. It calls the shared preparation, baseline and fine-tuning scripts; do not regenerate established local splits just to reorganize folders.
+
+Run the commands above from the repository root (`main_btp/` locally, `/content/BTP` on Colab). This experiment is archived under `before_mid_evaluation/experiments/`; restructuring did not rerun it or change its saved results.

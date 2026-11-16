@@ -11,10 +11,10 @@ Method (confident learning, 2-fold cross-fitting):
   3. Drop a review when the out-of-sample model is confident (p > --threshold) AND its prediction is
      at least --min-distance classes away from the label. For 5 ordered classes, 4-vs-5 stars is
      ambiguity rather than noise, so the default distance of 2 keeps those and removes only contradictions.
-  4. Write <data-dir>_clean/ with the cleaned train.csv; val/test/test_natural are copied UNCHANGED,
+  4. Write <data-dir>_cleaned/ with the cleaned train.csv; val/test/test_natural are copied UNCHANGED,
      so the cleaned model is still judged on the original, untouched benchmark.
 
-Usage: python detect_label_noise.py --data-dir data5 [--fold-epochs 1] [--threshold 0.9] [--min-distance 2]
+Usage: python detect_label_noise.py --data-dir datasets/sentiment_5class [--fold-epochs 1] [--threshold 0.9] [--min-distance 2]
 """
 import argparse, json, shutil, subprocess, sys
 from pathlib import Path
@@ -25,14 +25,14 @@ import pandas as pd
 from prepare_data import label_names, stats_path
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--data-dir", default="data5")
+ap.add_argument("--data-dir", default="datasets/sentiment_5class")
 ap.add_argument("--model", default="roberta-base")
 ap.add_argument("--fold-epochs", type=float, default=1, help="1 is enough to spot contradictions")
 ap.add_argument("--threshold", type=float, default=0.9)
 ap.add_argument("--min-distance", type=int, default=2, help="classes apart before a disagreement counts as noise")
 ap.add_argument("--batch-size", type=int, default=32)
 ap.add_argument("--ckpt-dir", default="models", help="parent for fold checkpoints (use Drive on Colab)")
-ap.add_argument("--results-dir", default="results")
+ap.add_argument("--results-dir", default="before_mid_evaluation/local_results")
 args = ap.parse_args()
 
 src = Path(args.data_dir)
@@ -45,8 +45,8 @@ for name, other in (("a", "b"), ("b", "a")):
     d = Path(f"{args.data_dir}_fold_{name}")
     d.mkdir(exist_ok=True)
     folds[name].to_csv(d / "train.csv", index=False)          # train on this half
-    folds[other].to_csv(d / "test.csv", index=False)          # predict the other half
-    shutil.copy(src / "val.csv", d / "val.csv")
+    folds[other].to_csv(d / "test_balanced.csv", index=False)          # predict the other half
+    shutil.copy(src / "validation.csv", d / "validation.csv")
     out = d / "probs.npy"
     if not out.exists():
         cmd = [sys.executable, "finetune_roberta.py", "--model", args.model, "--name", f"fold_{name}",
@@ -62,10 +62,10 @@ pred, conf = p.argmax(-1), p.max(-1)
 label = train.label.to_numpy()
 noisy = (pred != label) & (conf > args.threshold) & (np.abs(pred - label) >= args.min_distance)
 
-dst = Path(f"{args.data_dir}_clean")
+dst = Path(f"{args.data_dir}_cleaned")
 dst.mkdir(exist_ok=True)
 train[~noisy].to_csv(dst / "train.csv", index=False)
-for f in ("val.csv", "test.csv", "test_natural.csv"):         # benchmark stays untouched
+for f in ("validation.csv", "test_balanced.csv", "test_natural.csv"):         # benchmark stays untouched
     if (src / f).exists():
         shutil.copy(src / f, dst / f)
 shutil.copy(stats_path(str(src)), stats_path(str(dst)))        # class priors are unchanged
